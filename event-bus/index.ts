@@ -7,7 +7,7 @@ import axios from "axios";
 /**
  * * Constants
  */
-const POSTS_BASE_URL = "http://localhost:4000/";
+const POSTS_BASE_URL = "http://localhost:4000";
 const COMMENTS_BASE_URL = "http://localhost:5000";
 
 /**
@@ -38,7 +38,7 @@ server.post("/events", (request: Request, response: Response) => {
   axios.post(`${COMMENTS_BASE_URL}/events`, event);
 
   return response.json({
-    message: "OKAY",
+    message: "Okay",
   });
 });
 
@@ -46,6 +46,6 @@ server.get("/events", (request: Request, response: Response) => {
   return response.json(events);
 });
 
-server.listen(5000, () => {
-  console.log("Server is listing on PORT 5000");
+server.listen(9000, () => {
+  console.log("Server is listing on PORT 9000");
 });
