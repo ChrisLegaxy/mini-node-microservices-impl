@@ -13,7 +13,7 @@ import { posts } from "./data/posts";
 /**
  * * Constants
  */
-const EVENT_BUS_URL = "http://localhost:5000/events";
+const EVENT_BUS_URL = "http://localhost:9000/events";
 
 /**
  * * Initiaize server
@@ -48,10 +48,10 @@ server.post("/posts", async (request: Request, response: Response) => {
       type: "PostCreated",
       data: posts[id],
     });
-  } catch(error) {
+  } catch (error) {
     return response.status(500).json({
-      message: "Something went wrong"
-    })
+      message: "Something went wrong",
+    });
   }
 
   return response.json(posts[id]);
@@ -61,9 +61,11 @@ server.post("/posts", async (request: Request, response: Response) => {
  * * Recieving Events
  */
 server.post("/events", (request: Request, resposne: Response) => {
+  const { type: eventType, data: eventData } = request.body;
+
   console.log("=============================================");
-  console.log("Event recieved:", request.body.type);
-  console.log("Data:", request.body.data);
+  console.log("Event recieved:", eventType);
+  console.log("Data:", eventData);
   console.log("=============================================");
 
   return resposne.end();
