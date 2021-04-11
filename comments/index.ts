@@ -14,7 +14,7 @@ import { handleEvent } from "./methods/event-handling";
 /**
  * * Constants
  */
-const EVENT_BUS_URL = "http://localhost:5000/events";
+const EVENT_BUS_URL = "http://localhost:9000/events";
 
 /**
  * * Initiaize server
@@ -68,7 +68,8 @@ server.post("/posts/:id/comments", async (request: Request, response: Response) 
     await axios.post(EVENT_BUS_URL, {
       type: "CommentCreated",
       data: {
-        postId: incomingComment
+        postId,
+        ...incomingComment
       },
     });
   } catch (error) {
