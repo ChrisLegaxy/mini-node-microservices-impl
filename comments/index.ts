@@ -35,51 +35,55 @@ server.get("/posts/:id/comments", (request: Request, response: Response) => {
 
   if (!commentsByPostId[postId]) {
     return response.status(404).json({
-      message: "Post not found"
-    })
+      message: "Post not found",
+    });
   }
 
   return response.json(commentsByPostId[request.params.id]);
 });
 
-server.post("/posts/:id/comments", async (request: Request, response: Response) => {
-  const postId = request.params.id;
+server.post(
+  "/posts/:id/comments",
+  async (request: Request, response: Response) => {
+    const postId = request.params.id;
 
-  if (!commentsByPostId[postId]) {
-    return response.status(404).json({
-      message: "Post not found"
-    })
+    if (!commentsByPostId[postId]) {
+      return response.status(404).json({
+        message: "Post not found",
+      });
+    }
+
+    const id = uuidv4();
+    const { content } = request.body;
+
+    const incomingComment = {
+      id,
+      content,
+      status: "pending",
+    };
+
+    const comments = commentsByPostId[postId];
+
+    comments.push(incomingComment);
+
+    /* emit 'CommentCreated' event */
+    try {
+      await axios.post(EVENT_BUS_URL, {
+        type: "CommentCreated",
+        data: {
+          postId,
+          ...incomingComment,
+        },
+      });
+    } catch (error) {
+      return response.status(500).json({
+        message: "Something went wrong",
+      });
+    }
+
+    return response.json(comments);
   }
-
-  const id = uuidv4();
-  const { content } = request.body;
-
-  const incomingComment = {
-    id,
-    content
-  }
-
-  const comments = commentsByPostId[postId];
-
-  comments.push(incomingComment);
-
-  /* emit 'CommentCreated' event */
-  try {
-    await axios.post(EVENT_BUS_URL, {
-      type: "CommentCreated",
-      data: {
-        postId,
-        ...incomingComment
-      },
-    });
-  } catch (error) {
-    return response.status(500).json({
-      message: "Something went wrong",
-    });
-  }
-
-  return response.json(comments);
-});
+);
 
 /**
  * * Recieving Events
@@ -92,7 +96,7 @@ server.post("/events", (request: Request, resposne: Response) => {
   console.log("Data:", eventData);
   console.log("=============================================");
 
-  handleEvent(eventType, eventData);
+  handleEvent(eventType, eventData, EVENT_BUS_URL);
 
   return resposne.end();
 });
