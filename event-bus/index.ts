@@ -10,6 +10,7 @@ import axios from "axios";
 const POSTS_BASE_URL = "http://localhost:4000";
 const COMMENTS_BASE_URL = "http://localhost:5000";
 const QUERY_BASE_URL = "http://localhost:6000";
+const MODERATION_BASE_URL = "http://localhost:7000";
 
 /**
  * * Data
@@ -38,6 +39,7 @@ server.post("/events", (request: Request, response: Response) => {
   axios.post(`${POSTS_BASE_URL}/events`, event);
   axios.post(`${COMMENTS_BASE_URL}/events`, event);
   axios.post(`${QUERY_BASE_URL}/events`, event);
+  axios.post(`${MODERATION_BASE_URL}/events`, event);
 
   return response.json({
     message: "Okay",
