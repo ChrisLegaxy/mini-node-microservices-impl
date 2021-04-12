@@ -9,20 +9,36 @@ export const handleEvent = (eventType: string, eventData: any) => {
         posts[id] = {
           id,
           title,
-          comments: []
-        }
+          comments: [],
+        };
       }
 
       break;
     }
     case "CommentCreated": {
-      const { postId, id, content } = eventData;
+      const { postId, id, content, status } = eventData;
 
       if (posts[postId]) {
         posts[postId].comments.push({
           id,
-          content
-        })
+          content,
+          status,
+        });
+      }
+
+      break;
+    }
+    case "CommentUpdated": {
+      const { postId, id, status } = eventData;
+
+      if (posts[postId]) {
+        const comments = posts[postId].comments;
+
+        const comment = comments.find((comment) => comment.id === id);
+
+        if (comment) {
+          comment.status = status;
+        }
       }
 
       break;
