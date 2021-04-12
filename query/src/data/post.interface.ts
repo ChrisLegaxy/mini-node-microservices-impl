@@ -7,6 +7,7 @@ export interface Post {
 export interface Comment {
   id: string;
   content: string;
+  status: string;
 }
 
 export interface PostsWithCommentsCollection {
